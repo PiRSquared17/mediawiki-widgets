@@ -7,7 +7,7 @@
  * @version $Id$
  */
 
-// Initialize Sparty
+// Initialize Smarty
 
 require "$IP/extensions/Widgets/smarty/Smarty.class.php";
 $smarty = new Smarty;
@@ -18,10 +18,6 @@ $smarty->security = true;
 $smarty->security_settings = array(
 	'IF_FUNCS' => array('is_array', 'isset', 'array', 'list', 'count', 'sizeof', 'in_array', 'true', 'false', 'null')
 );
-
-#require "$IP/extensions/Widget/cache.smarty_apc.php";
-#$smarty->cache_handler_func = 'smarty_cache_apc';
-#$smarty->caching = 1;
 
 // Parser function registration
 $wgExtensionFunctions[] = 'widgetParserFunctions';
