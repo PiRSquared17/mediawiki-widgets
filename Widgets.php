@@ -51,7 +51,7 @@ function renderWidget (&$parser, $widgetName)
 
         foreach ($params as $param)
         {
-                $pair = explode('=', $param);
+                $pair = explode('=', $param, 2);
 
                 if (isset($pair[1]))
                 {
