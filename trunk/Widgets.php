@@ -57,15 +57,64 @@ function renderWidget (&$parser, $widgetName)
         array_shift($params); # first one is parser - we don't need it
         array_shift($params); # second one is widget name
 
+	$params_tree = array();
+
         foreach ($params as $param)
         {
                 $pair = explode('=', $param, 2);
 
-                if (isset($pair[1]))
+                if (count($pair) == 2)
                 {
-			$smarty->assign(trim($pair[0]), trim($pair[1]));
+			$key = trim($pair[0]);
+			$val = trim($pair[1]);
+
+			/* If the name of the parameter has object notation
+
+				a.b.c.d
+
+			   then we assign stuff to hash of hashes, not scalar
+
+			*/
+			$keys = explode('.', $key);
+
+			// $subtree will be moved from top to the bottom and at the end will point to the last level
+			$subtree =& $params_tree;
+
+			// go throught all the keys but last one
+			$last_key = array_pop($keys);
+
+			foreach ($keys as $subkey)
+			{
+				// if next level of subtree doesn't exist yet, create an empty one
+				if (!array_key_exists($subkey, $subtree))
+				{
+					$subtree[$subkey] = array();
+				}
+
+				// move to the lower level
+				$subtree =& $subtree[$subkey];
+			}
+
+			// last portion of the key points to itself
+			if (isset($subtree[$last_key]))
+			{
+				// if already an array, push into it, otherwise, convert into array first
+				if (!is_array($subtree[$last_key]))
+				{
+					$subtree[$last_key] = array($subtree[$last_key]);
+				}
+
+				$subtree[$last_key][] = $val;
+			}
+			else
+			{
+				// doesn't exist yet, just setting a value
+				$subtree[$last_key] = $val;
+			}
                 }
         }
+
+	$smarty->assign($params_tree);
 
 	try
 	{
