@@ -10,7 +10,7 @@
 $wgExtensionCredits['parserhook'][] = array(
         'name' => 'Widgets',
         'description' => 'Allows wiki administrators to add free-form widgets to wiki by just editing pages within Widget namespace. Originally developed for [http://www.ardorado.com Ardorado.com]',
-	'version' => 0.6,
+	'version' => 0.7,
         'author' => '[http://www.sergeychernyshev.com Sergey Chernyshev] (for [http://www.semanticcommunities.com Semantic Communities LLC.])',
         'url' => 'http://www.mediawiki.org/wiki/Extension:Widgets'
 );
@@ -18,14 +18,6 @@ $wgExtensionCredits['parserhook'][] = array(
 // Initialize Smarty
 
 require "$IP/extensions/Widgets/smarty/Smarty.class.php";
-$smarty = new Smarty;
-$smarty->left_delimiter = '<!--{';
-$smarty->right_delimiter = '}-->';
-$smarty->compile_dir  = "$IP/extensions/Widgets/compiled_templates/";
-$smarty->security = true;
-$smarty->security_settings = array(
-	'IF_FUNCS' => array('is_array', 'isset', 'array', 'list', 'count', 'sizeof', 'in_array', 'true', 'false', 'null')
-);
 
 // Parser function registration
 $wgExtensionFunctions[] = 'widgetParserFunctions';
@@ -51,7 +43,22 @@ function widgetLanguageGetMagic( &$magicWords, $langCode = "en" )
 
 function renderWidget (&$parser, $widgetName)
 {
-	global $smarty;
+	global $IP;
+
+	$smarty = new Smarty;
+	$smarty->left_delimiter = '<!--{';
+	$smarty->right_delimiter = '}-->';
+	$smarty->compile_dir  = "$IP/extensions/Widgets/compiled_templates/";
+	$smarty->security = true;
+	$smarty->security_settings = array(
+		'IF_FUNCS' => array('is_array', 'isset', 'array', 'list', 'count', 'sizeof', 'in_array', 'true', 'false', 'null')
+	);
+
+	// register the resource name "db"
+	$smarty->register_resource("wiki", array("wiki_get_template",
+					       "wiki_get_timestamp",
+					       "wiki_get_secure",
+					       "wiki_get_trusted"));
 
         $params = func_get_args();
         array_shift($params); # first one is parser - we don't need it
@@ -204,8 +211,3 @@ function wiki_get_trusted($tpl_name, &$smarty_obj)
     // not used for templates
 }
 
-// register the resource name "db"
-$smarty->register_resource("wiki", array("wiki_get_template",
-                                       "wiki_get_timestamp",
-                                       "wiki_get_secure",
-                                       "wiki_get_trusted"));
