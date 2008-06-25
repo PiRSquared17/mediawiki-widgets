@@ -26,8 +26,8 @@ else
 	#
 	# Copying tarball and zip to destination
 	#
-	mv Widgets_${v}.tgz ${dest}
-	mv Widgets_${v}.zip ${dest}
+#	mv Widgets_${v}.tgz ${dest}
+#	mv Widgets_${v}.zip ${dest}
 #	googlecode_upload.py -s "MediaWiki Widgets Extension v${v} (tarball)" -l "Widgets MediaWiki Extension Featured" -p mediawiki-widgets Widgets_${v}.tgz
 #	googlecode_upload.py -s "MediaWiki Widgets Extension v${v} (zip)" -l "Widgets MediaWiki Extension Featured" -p mediawiki-widgets Widgets_${v}.zip
 endif
