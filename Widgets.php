@@ -132,7 +132,7 @@ function renderWidget (&$parser, $widgetName)
 		return "<div class=\"error\">Error in [[Widget:$widgetName]]</div>";
 	}
 
-	return array($output, 'noparse' => true, 'isHTML' => true, 'noargs' => true);
+	return $parser->insertStripItem( $output, $parser->mStripState );
 }
 
 function widgetNamespacesInit() {
